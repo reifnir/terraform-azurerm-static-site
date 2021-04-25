@@ -1,0 +1,1 @@
+# terraform-azure-static-site
