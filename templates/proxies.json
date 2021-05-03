@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "files": {
+      "matchCondition": {
+        "route": "{*path}",
+        "methods": ["GET"]
+      },
+      "backendUri": "${storage_account_static_website_url}{path}",
+      "debug": true
+    }
+  }
+}
