@@ -40,7 +40,7 @@ resource "azurerm_storage_container" "function_packages" {
   container_access_type = "private"
 }
 
-resource "azurerm_storage_blob" "example" {
+resource "azurerm_storage_blob" "static_files" {
   for_each               = fileset(var.static_content_directory, "**")
   name                   = each.value
   storage_account_name   = azurerm_storage_account.static_site.name
