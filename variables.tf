@@ -40,19 +40,29 @@ variable "tags" {
 }
 
 variable "custom_dns" {
-  description = "Informaiton required to "
+  description = "Informaiton required to wire-up custom DNS for your static site. When setting hostnames, be sure to enter the full DNS"
   type = object({
     dns_provider               = string
-    dns_id                     = string
+    dns_zone_id                = string
+    hostnames                  = set(string)
     lets_encrypt_contact_email = string
   })
+
 
   validation {
     condition = (
       var.custom_dns == null
       || (var.custom_dns == null ? "azure" : var.custom_dns.dns_provider) == "azure"
     )
-    error_message = "Custom DNS provider for terraform-azurerm-static-site only supports Azure DNS."
+    error_message = "Custom DNS provider for terraform-azurerm-static-site only supports Azure DNS. Set this value to 'azure' when setting custom DNS unless you want to add an issue or contribute here: https://github.com/reifnir/terraform-azurerm-static-site/issues."
+  }
+
+  validation {
+    condition = (
+      var.custom_dns == null
+      || (var.custom_dns == null ? 9 : length(split("/", var.custom_dns.dns_zone_id))) == 9
+    )
+    error_message = "Variable custom_dns.dns_zone_id must be the full Azure DNS Zone id. Ex: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-my-resource-group/providers/Microsoft.Network/dnszones/example.com'."
   }
 
   default = null
