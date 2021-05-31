@@ -4,7 +4,7 @@ terraform {
     resource_group_name  = "rg-common-storage"
     storage_account_name = "sareifnircommonstorage"
     container_name       = "terraform-state"
-    key                  = "terraform-azurerm-azure-functions-static-site-some-custom-dns.tfstate"
+    key                  = "terraform-azurerm-static-site.tfstate"
   }
 }
 
@@ -21,16 +21,6 @@ resource "random_string" "name_suffix" {
 }
 
 locals {
-  # Hostname is the part of the DNS record that comes before the domain and TLD. See: https://techterms.com/definition/fqdn
-  #   Ex: hostname.mydomain.com       -> hostname = 'hostname'
-  #   Ex: other.hostname.mydomain.com -> hostname = 'other.hostname'
-  # We want to host our static site at 'some-custom-dns-0a9z.somedomain.com'
-  dns_hostname                 = "some-custom-dns-${random_string.name_suffix.result}"
-  # full_custom_domain_name      = "${local.dns_hostname}.${data.azurerm_dns_zone.custom.name}"
-  # dns_zone_subscription_id     = split("/", var.azure_dns_zone_id)[2]
-  # dns_zone_name                = split("/", var.azure_dns_zone_id)[8]
-  # dns_zone_resource_group_name = split("/", var.azure_dns_zone_id)[4]
-
   azure_function_name = "static-site-example-${random_string.name_suffix.result}"
 
   tags = {
