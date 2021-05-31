@@ -40,12 +40,13 @@ variable "tags" {
 }
 
 variable "custom_dns" {
-  description = "Informaiton required to wire-up custom DNS for your static site. When setting hostnames, be sure to enter the full DNS"
+  description = "Information required to wire-up custom DNS for your static site. When setting hostnames, be sure to enter the full DNS. Note that the Azure client secret is necessary for completing ACME DNS verification when generating a Let's Encrypt TLS certificate."
   type = object({
     dns_provider               = string
     dns_zone_id                = string
     hostnames                  = set(string)
     lets_encrypt_contact_email = string
+    azure_client_secret        = string
   })
 
 

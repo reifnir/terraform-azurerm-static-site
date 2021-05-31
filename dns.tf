@@ -1,7 +1,9 @@
 locals {
   create_dns                   = var.custom_dns != null
-  dns_zone_name                = local.create_dns ? split("/", var.custom_dns.dns_zone_id)[8] : ""
+  dns_zone_subscription_id     = local.create_dns ? split("/", var.custom_dns.dns_zone_id)[2] : ""
   dns_zone_resource_group_name = local.create_dns ? split("/", var.custom_dns.dns_zone_id)[4] : ""
+  dns_zone_name                = local.create_dns ? split("/", var.custom_dns.dns_zone_id)[8] : ""
+
   dns_cname_list               = local.create_dns ? [for h in var.custom_dns.hostnames : h if h != "@"] : []
   dns_naked_a_record           = local.create_dns ? contains(var.custom_dns.hostnames, "@") : false
 
@@ -55,9 +57,4 @@ resource "azurerm_dns_txt_record" "function_domain_verification" {
   provisioner "local-exec" {
     command = "sleep 10s"
   }
-}
-
-
-output "debug" {
-  value = data.dns_a_record_set.function
 }

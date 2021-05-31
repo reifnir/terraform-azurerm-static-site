@@ -12,6 +12,10 @@ provider "azurerm" {
   features {}
 }
 
+variable "azure_client_secret" {
+  description = "This value is passed into the ACME provider in order to perform the ACME DNS verification in order to generate a valid TLS certificate."
+}
+
 resource "random_string" "name_suffix" {
   length  = 4
   number  = true
@@ -42,6 +46,7 @@ module "custom_dns_static_site" {
     dns_provider               = "azure"
     dns_zone_id                = "/subscriptions/8df18e1b-269a-426f-a321-ca437966c787/resourceGroups/rg-dns-zones/providers/Microsoft.Network/dnszones/reifnir.com"
     lets_encrypt_contact_email = "jim.andreasen@reifnir.com"
+    azure_client_secret        = var.azure_client_secret
   }
 
   tags = local.tags

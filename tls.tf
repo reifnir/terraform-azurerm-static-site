@@ -3,6 +3,11 @@ provider "acme" {
   server_url = "https://acme-v02.api.letsencrypt.org/directory"
 }
 
+locals {
+  full_custom_domain_name = local.dns_naked_a_record ? data.azurerm_dns_zone.custom.0.name : (local.create_dns ? "${local.dns_cname_list[0]}.${data.azurerm_dns_zone.custom.0.name}" : "")
+  subject_alternative_names = concat((local.dns_naked_a_record ? [data.azurerm_dns_zone.custom.0.name] : []), [for h in local.dns_cname_list : "${h}.${data.azurerm_dns_zone.custom.0.name}"])
+}
+
 resource "tls_private_key" "reg_private_key" {
   count     = local.create_dns ? 1 : 0
   algorithm = "RSA"
@@ -12,4 +17,44 @@ resource "acme_registration" "reg" {
   count           = local.create_dns ? 1 : 0
   account_key_pem = tls_private_key.reg_private_key.0.private_key_pem
   email_address   = var.custom_dns.lets_encrypt_contact_email
+}
+
+resource "random_password" "pfx" {
+  count  = local.create_dns ? 1 : 0
+  length = 16
+}
+
+resource "acme_certificate" "certificate" {
+  count  = local.create_dns ? 1 : 0
+  account_key_pem           = acme_registration.reg.0.account_key_pem
+  key_type                  = "4096"
+  common_name               = local.full_custom_domain_name
+  subject_alternative_names = local.subject_alternative_names
+  certificate_p12_password  = random_password.pfx.0.result
+  min_days_remaining        = 30
+
+  dns_challenge {
+    provider = "azure"
+
+    config = {
+      AZURE_CLIENT_ID       = data.azurerm_client_config.current.client_id
+      AZURE_CLIENT_SECRET   = var.custom_dns.azure_client_secret
+      AZURE_SUBSCRIPTION_ID = local.dns_zone_subscription_id
+      AZURE_TENANT_ID       = data.azurerm_client_config.current.tenant_id
+      AZURE_ENVIRONMENT     = "public"
+      AZURE_RESOURCE_GROUP  = local.dns_zone_resource_group_name
+    }
+  }
+  depends_on = [azurerm_dns_txt_record.function_domain_verification]
+}
+
+output "debug" {
+  value = {
+    full_custom_domain_name = local.full_custom_domain_name
+    subject_alternative_names = local.subject_alternative_names
+    client_config = data.azurerm_client_config.current
+  }
+}
+
+data "azurerm_client_config" "current" {
 }
