@@ -27,7 +27,7 @@ resource "azurerm_storage_account" "static_site" {
   dynamic "static_website" {
     for_each = local.specified_404_page ? [] : [1]
     content {
-      index_document     = var.index_document
+      index_document = var.index_document
     }
   }
 

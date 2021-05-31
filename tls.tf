@@ -4,7 +4,7 @@ provider "acme" {
 }
 
 locals {
-  full_custom_domain_name = local.dns_naked_a_record ? data.azurerm_dns_zone.custom.0.name : (local.create_dns ? "${local.dns_cname_list[0]}.${data.azurerm_dns_zone.custom.0.name}" : "")
+  full_custom_domain_name   = local.dns_naked_a_record ? data.azurerm_dns_zone.custom.0.name : (local.create_dns ? "${local.dns_cname_list[0]}.${data.azurerm_dns_zone.custom.0.name}" : "")
   subject_alternative_names = concat((local.dns_naked_a_record ? [data.azurerm_dns_zone.custom.0.name] : []), [for h in local.dns_cname_list : "${h}.${data.azurerm_dns_zone.custom.0.name}"])
 }
 
@@ -25,7 +25,7 @@ resource "random_password" "pfx" {
 }
 
 resource "acme_certificate" "certificate" {
-  count  = local.create_dns ? 1 : 0
+  count                     = local.create_dns ? 1 : 0
   account_key_pem           = acme_registration.reg.0.account_key_pem
   key_type                  = "4096"
   common_name               = local.full_custom_domain_name
@@ -48,12 +48,22 @@ resource "acme_certificate" "certificate" {
   depends_on = [azurerm_dns_txt_record.function_domain_verification]
 }
 
-output "debug" {
-  value = {
-    full_custom_domain_name = local.full_custom_domain_name
-    subject_alternative_names = local.subject_alternative_names
-    client_config = data.azurerm_client_config.current
-  }
+resource "azurerm_app_service_certificate" "custom_hostname" {
+  count = local.create_dns ? 1 : 0
+  # count               = length(local.subject_alternative_names)
+  name                = local.subject_alternative_names.0
+  resource_group_name = azurerm_resource_group.static_site.name
+  location            = azurerm_resource_group.static_site.location
+  pfx_blob            = acme_certificate.certificate.0.certificate_p12
+  password            = acme_certificate.certificate.0.certificate_p12_password
+  depends_on          = [acme_certificate.certificate]
+}
+
+resource "azurerm_app_service_certificate_binding" "custom_hostname" {
+  count               = length(local.subject_alternative_names)
+  hostname_binding_id = azurerm_app_service_custom_hostname_binding.static_site[count.index].id
+  certificate_id      = azurerm_app_service_certificate.custom_hostname.0.id
+  ssl_state           = "SniEnabled"
 }
 
 data "azurerm_client_config" "current" {

@@ -17,7 +17,7 @@ provider "azurerm" {
 }
 
 module "file_extensions" {
-  source  = "reifnir/mime-map/null"
+  source = "reifnir/mime-map/null"
 }
 
 locals {

@@ -10,7 +10,7 @@ locals {
 }
 
 resource "local_file" "proxies" {
-  content  = templatefile("${path.module}/templates/proxies.json", { storage_account_static_website_url =azurerm_storage_account.static_site. primary_web_endpoint})
+  content  = templatefile("${path.module}/templates/proxies.json", { storage_account_static_website_url = azurerm_storage_account.static_site.primary_web_endpoint })
   filename = "${local.temp_package_contents_dir}/proxies.json"
 }
 

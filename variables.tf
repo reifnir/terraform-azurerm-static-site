@@ -46,6 +46,7 @@ variable "custom_dns" {
     dns_zone_id                = string
     hostnames                  = set(string)
     lets_encrypt_contact_email = string
+    azure_client_id            = string
     azure_client_secret        = string
   })
 
