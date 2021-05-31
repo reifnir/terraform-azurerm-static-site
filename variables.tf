@@ -48,8 +48,10 @@ variable "custom_dns" {
   })
 
   validation {
-    condition = (var.custom_dns == null
-    || (var.custom_dns == null ? "azure" : var.custom_dns.dns_provider) == "azure")
+    condition = (
+      var.custom_dns == null
+      || (var.custom_dns == null ? "azure" : var.custom_dns.dns_provider) == "azure"
+    )
     error_message = "Custom DNS provider for terraform-azurerm-static-site only supports Azure DNS."
   }
 
