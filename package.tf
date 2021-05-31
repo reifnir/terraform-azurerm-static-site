@@ -15,9 +15,22 @@ resource "local_file" "proxies" {
 }
 
 
-# data "archive_file" "azure_function_package" {
-#   type        = "zip"
-#   source_dir  = local.temp_package_contents_dir
-#   output_path = local.temp_package_zip_path
-#   depends_on  = [null_resource.package_build]
-# }
+data "archive_file" "azure_function_package" {
+  type        = "zip"
+  source_dir  = local.temp_package_contents_dir
+  output_path = local.temp_package_zip_path
+  depends_on  = [local_file.proxies]
+}
+
+resource "azurerm_storage_blob" "function" {
+  name                   = "fn-${local.now_friendly}.zip"
+  storage_account_name   = azurerm_storage_account.static_site.name
+  storage_container_name = azurerm_storage_container.function_packages.name
+  type                   = "Block"
+  metadata = {
+    sha1   = data.archive_file.azure_function_package.output_sha
+    sha256 = data.archive_file.azure_function_package.output_base64sha256
+    md5    = data.archive_file.azure_function_package.output_md5
+  }
+  source = data.archive_file.azure_function_package.output_path
+}
