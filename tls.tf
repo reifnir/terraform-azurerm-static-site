@@ -37,7 +37,7 @@ resource "acme_certificate" "certificate" {
     provider = "azure"
 
     config = {
-      AZURE_CLIENT_ID       = data.azurerm_client_config.current.client_id
+      AZURE_CLIENT_ID       = var.custom_dns.azure_client_id
       AZURE_CLIENT_SECRET   = var.custom_dns.azure_client_secret
       AZURE_SUBSCRIPTION_ID = local.dns_zone_subscription_id
       AZURE_TENANT_ID       = data.azurerm_client_config.current.tenant_id
