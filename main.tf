@@ -5,6 +5,10 @@ terraform {
       # Only testing with azurerm provider 2, need to test before being used in 3
       version = "~> 2"
     }
+    acme = {
+      source  = "vancluever/acme"
+      version = "2.4.0" # Since this isn't a Hashicorp-specific provider, not implicitly trusting patches
+    }
   }
 }
 
