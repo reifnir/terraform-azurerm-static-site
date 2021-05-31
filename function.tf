@@ -56,11 +56,6 @@ resource "azurerm_function_app" "static_site" {
   https_only                 = true
   enable_builtin_logging     = false
 
-  identity {
-    type = "SystemAssigned"
-  }
-
-
   site_config {
     ftps_state = "Disabled"
   }
