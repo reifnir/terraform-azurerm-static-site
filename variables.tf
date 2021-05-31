@@ -38,3 +38,20 @@ variable "tags" {
     "ManagedBy" = "Terraform"
   }
 }
+
+variable "custom_dns" {
+  description = "Informaiton required to "
+  type = object({
+    dns_provider               = string
+    dns_id                     = string
+    lets_encrypt_contact_email = string
+  })
+
+  validation {
+    condition = (var.custom_dns == null
+    || (var.custom_dns == null ? "azure" : var.custom_dns.dns_provider) == "azure")
+    error_message = "Custom DNS provider for terraform-azurerm-static-site only supports Azure DNS."
+  }
+
+  default = null
+}
