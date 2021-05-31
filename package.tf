@@ -4,7 +4,7 @@
 #   With no possibility of file collissions for previous builds
 # See: https://github.com/hashicorp/terraform/issues/21308#issuecomment-721478826
 locals {
-  temp_dir                  = "${path.root}/.terraform/tmp/build-${local.now_friendly}"
+  temp_dir                  = "${path.root}/.terraform/tmp"
   temp_package_contents_dir = "${local.temp_dir}/package"
   temp_package_zip_path     = "${local.temp_dir}/package.zip"
 }
@@ -23,7 +23,7 @@ data "archive_file" "azure_function_package" {
 }
 
 resource "azurerm_storage_blob" "function" {
-  name                   = "fn-${local.now_friendly}.zip"
+  name                   = "fn-${data.archive_file.azure_function_package.output_md5}.zip"
   storage_account_name   = azurerm_storage_account.static_site.name
   storage_container_name = azurerm_storage_container.function_packages.name
   type                   = "Block"
