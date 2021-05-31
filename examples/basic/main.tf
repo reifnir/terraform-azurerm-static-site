@@ -24,7 +24,7 @@ locals {
   # Hostname is the part of the DNS record that comes before the domain and TLD. See: https://techterms.com/definition/fqdn
   #   Ex: hostname.mydomain.com       -> hostname = 'hostname'
   #   Ex: other.hostname.mydomain.com -> hostname = 'other.hostname'
-  # We want to host our static site at 'some-custom-dns-0000.somedomain.com'
+  # We want to host our static site at 'some-custom-dns-0a9z.somedomain.com'
   dns_hostname                 = "some-custom-dns-${random_string.name_suffix.result}"
   # full_custom_domain_name      = "${local.dns_hostname}.${data.azurerm_dns_zone.custom.name}"
   # dns_zone_subscription_id     = split("/", var.azure_dns_zone_id)[2]
@@ -48,7 +48,6 @@ module "simple_example_static_site" {
   tags                     = local.tags
 }
 
-output "debug" {
+output "static_site" {
   value = module.simple_example_static_site
-  sensitive = true
 }
