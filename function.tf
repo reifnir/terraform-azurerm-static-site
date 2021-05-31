@@ -58,18 +58,12 @@ resource "azurerm_function_app" "static_site" {
   enable_builtin_logging = false
 
   site_config {
-    linux_fx_version          = "dotnet|3.1"
-    use_32_bit_worker_process = false
     ftps_state                = "Disabled"
-    http2_enabled             = false
   }
 
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"       = "dotnet"
-    "FUNCTION_APP_EDIT_MODE"         = "readonly"
     "WEBSITE_RUN_FROM_PACKAGE"       = "https://${azurerm_storage_account.static_site.name}.blob.core.windows.net/${azurerm_storage_container.function_packages.name}/${azurerm_storage_blob.function.name}${data.azurerm_storage_account_sas.package.sas}"
     # "APPINSIGHTS_INSTRUMENTATIONKEY" = var.enable_app_insights ? azurerm_application_insights.static_site.0.instrumentation_key : ""
-    "https_only"                     = true
 
     # Informational
     "package_creation_timestamp" = local.now
