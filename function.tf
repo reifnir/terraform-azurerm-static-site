@@ -30,7 +30,7 @@ data "azurerm_storage_account_sas" "package" {
   }
 
   start  = local.now
-  expiry = local.in_ten_years
+  expiry = local.in_one_hundred_years
 
   permissions {
     read    = true
@@ -54,15 +54,19 @@ resource "azurerm_function_app" "static_site" {
   os_type                    = "linux"
   version                    = "~3"
   https_only                 = true
+  enable_builtin_logging     = false
 
-  enable_builtin_logging = false
+  identity {
+    type = "SystemAssigned"
+  }
+
 
   site_config {
-    ftps_state                = "Disabled"
+    ftps_state = "Disabled"
   }
 
   app_settings = {
-    "WEBSITE_RUN_FROM_PACKAGE"       = "https://${azurerm_storage_account.static_site.name}.blob.core.windows.net/${azurerm_storage_container.function_packages.name}/${azurerm_storage_blob.function.name}${data.azurerm_storage_account_sas.package.sas}"
+    "WEBSITE_RUN_FROM_PACKAGE" = local.function_package_get_url
     # "APPINSIGHTS_INSTRUMENTATIONKEY" = var.enable_app_insights ? azurerm_application_insights.static_site.0.instrumentation_key : ""
 
     # Informational
