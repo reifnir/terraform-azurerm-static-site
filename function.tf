@@ -61,10 +61,7 @@ resource "azurerm_function_app" "static_site" {
   }
 
   app_settings = {
-    "WEBSITE_RUN_FROM_PACKAGE" = local.function_package_get_url
-    # "APPINSIGHTS_INSTRUMENTATIONKEY" = var.enable_app_insights ? azurerm_application_insights.static_site.0.instrumentation_key : ""
-
-    # Informational
+    "WEBSITE_RUN_FROM_PACKAGE"   = local.function_package_get_url
     "package_creation_timestamp" = local.now
     "sha1"                       = data.archive_file.azure_function_package.output_sha
     "sha256"                     = data.archive_file.azure_function_package.output_base64sha256

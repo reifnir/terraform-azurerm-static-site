@@ -14,21 +14,15 @@ variable "static_content_directory" {
   description = "This is the path to the directory containing static resources."
 }
 
-variable "enable_app_insights" {
-  type        = bool
-  description = "App Insights isn't free. If you don't want App Insights attached to this site, set this value to false. You can always enable it later if you need to troubleshoot something."
-  default     = false
-}
-
 variable "index_document" {
   type        = string
-  description = "The webpage that Azure Storage serves for requests to the root of a website or any subfolder. For example, index.html. The value is case-sensitive."
+  description = "The webpage that Azure Storage serves for requests to the root of a website or any subfolder. For example, index.html. This value is case-sensitive."
   default     = "index.html"
 }
 
 variable "error_404_document" {
   type        = string
-  description = "The absolute path to a custom webpage that should be used when a request is made which does not correspond to an existing file."
+  description = "The resource path to a custom webpage that should be used when a request is made for a resource that doesn't exist in the supplied directory of static content. Ex: 'error_404.html'"
   default     = ""
 }
 

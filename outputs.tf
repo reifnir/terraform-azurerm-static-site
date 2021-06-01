@@ -8,6 +8,7 @@ output "azure_function_defualt_url" {
   value       = "https://${azurerm_function_app.static_site.default_hostname}"
 }
 
-output "dns_entries" {
+output "custom_dns_domains" {
+  description = "List of any custom DNS domains that were created bound to the static site"
   value = local.subject_alternative_names
 }
