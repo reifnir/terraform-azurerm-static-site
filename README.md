@@ -39,11 +39,9 @@ Because it is currently impossible to bind custom TLS certificates to an Azure S
 }
 ```
 
-In order to 
+In order for the files hosted in the Storage account to return the correct `content-type`, we're using  to map the values from [jshttp/mime-db](https://github.com/jshttp/mime-db) via [this](https://registry.terraform.io/modules/reifnir/mime-map/null/latest) Terraform module.
 
- looking like if we don't want to use custom domain names.
-
- creating a hollow Azure Functions application that simply acts as a reverse proxy over a storage account a C# .NET Core 3.1 Azure Functions package with the static contents hosted inside.
+These mappings can be replaced or added onto in the case that you have more exotic file types by passing that into the `custom_mime_mappings` variable.
 
 ## Usage example
  
@@ -165,6 +163,7 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_custom_dns"></a> [custom\_dns](#input\_custom\_dns) | Information required to wire-up custom DNS for your static site. When setting hostnames, be sure to enter the full DNS. Note that the Azure client secret is necessary for completing ACME DNS verification when generating a Let's Encrypt TLS certificate. | <pre>object({<br>    dns_provider               = string<br>    dns_zone_id                = string<br>    hostnames                  = set(string)<br>    lets_encrypt_contact_email = string<br>    azure_client_id            = string<br>    azure_client_secret        = string<br>  })</pre> | `null` | no |
+| <a name="input_custom_mime_mappings"></a> [custom\_mime\_mappings](#input\_custom\_mime\_mappings) | Add or replace content-type mappings by setting this value. Ex: `{ "text" = "text/plain", "new" = "text/derp" }` | `map(string)` | `null` | no |
 | <a name="input_error_404_document"></a> [error\_404\_document](#input\_error\_404\_document) | The resource path to a custom webpage that should be used when a request is made for a resource that doesn't exist in the supplied directory of static content. Ex: 'error\_404.html' | `string` | `""` | no |
 | <a name="input_index_document"></a> [index\_document](#input\_index\_document) | The webpage that Azure Storage serves for requests to the root of a website or any subfolder. For example, index.html. This value is case-sensitive. | `string` | `"index.html"` | no |
 | <a name="input_location"></a> [location](#input\_location) | Azure region in which resources will be located | `string` | `"eastus"` | no |

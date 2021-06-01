@@ -26,6 +26,12 @@ variable "error_404_document" {
   default     = ""
 }
 
+variable "custom_mime_mappings" {
+  type        = map(string)
+  description = "Add or replace content-type mappings by setting this value. Ex: `{ \"text\" = \"text/plain\", \"new\" = \"text/derp\" }`"
+  default     = null
+}
+
 variable "tags" {
   type = map(string)
   default = {
