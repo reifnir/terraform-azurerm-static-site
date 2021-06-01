@@ -64,6 +64,7 @@ module "simple_example_static_site" {
 ### Basic example with custom DNS/TLS certificate...
 
 ```terraform
+module "custom_dns_static_site" {
   source                   = "../../"
   name                     = local.azure_function_name
   static_content_directory = "${path.root}/static-content"
@@ -85,7 +86,7 @@ module "simple_example_static_site" {
   }
 
   tags = { "ManagedBy" = "Terraform }
-
+}
 ```
 
 ## Author
