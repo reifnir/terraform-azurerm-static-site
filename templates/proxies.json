@@ -6,8 +6,7 @@
         "route": "{*path}",
         "methods": ["GET"]
       },
-      "backendUri": "${storage_account_static_website_url}{path}",
-      "debug": true
+      "backendUri": "${storage_account_static_website_url}{path}"
     }
   }
 }
