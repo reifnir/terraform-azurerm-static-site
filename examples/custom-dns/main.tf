@@ -46,10 +46,10 @@ module "custom_dns_static_site" {
   error_404_document       = "error_404.html"
 
   custom_dns = {
-    # @ is interpreted as a naked domain. Ex: reifnir.com
+    # @ is interpreted as a naked domain. Ex: decomposingsoftware.com
     hostnames                  = ["@", "www", "deeper.subdomain"]
     dns_provider               = "azure"
-    dns_zone_id                = "/subscriptions/8df18e1b-269a-426f-a321-ca437966c787/resourceGroups/rg-dns-zones/providers/Microsoft.Network/dnszones/reifnir.com"
+    dns_zone_id                = "/subscriptions/8df18e1b-269a-426f-a321-ca437966c787/resourceGroups/rg-dns-zones/providers/Microsoft.Network/dnszones/decomposingsoftware.com"
     lets_encrypt_contact_email = "jim.andreasen@reifnir.com"
     azure_client_id            = var.azure_client_id
     azure_client_secret        = var.azure_client_secret
