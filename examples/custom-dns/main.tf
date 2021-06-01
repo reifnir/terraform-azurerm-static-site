@@ -47,7 +47,7 @@ module "custom_dns_static_site" {
 
   custom_dns = {
     # @ is interpreted as a naked domain. Ex: reifnir.com
-    hostnames                  = ["@", "www", "custom-dns-static-site"]
+    hostnames                  = ["@", "www", "deeper.subdomain"]
     dns_provider               = "azure"
     dns_zone_id                = "/subscriptions/8df18e1b-269a-426f-a321-ca437966c787/resourceGroups/rg-dns-zones/providers/Microsoft.Network/dnszones/reifnir.com"
     lets_encrypt_contact_email = "jim.andreasen@reifnir.com"

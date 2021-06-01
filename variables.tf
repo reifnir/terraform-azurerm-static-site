@@ -1,6 +1,6 @@
 variable "name" {
   type        = string
-  description = "Slug is added to the name of most resources"
+  description = "Slug is added to the name of most resources. This is also the name of the Azure Functions application and MUST be unique across all of Azure."
 }
 
 variable "location" {
@@ -33,7 +33,7 @@ variable "error_404_document" {
 }
 
 variable "tags" {
-  type = map(any)
+  type = map(string)
   default = {
     "ManagedBy" = "Terraform"
   }
