@@ -50,7 +50,6 @@ variable "custom_dns" {
     azure_client_secret        = string
   })
 
-
   validation {
     condition = (
       var.custom_dns == null

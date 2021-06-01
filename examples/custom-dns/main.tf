@@ -4,7 +4,7 @@ terraform {
     resource_group_name  = "rg-common-storage"
     storage_account_name = "sareifnircommonstorage"
     container_name       = "terraform-state"
-    key                  = "terraform-azurerm-static-site.tfstate"
+    key                  = "terraform-azurerm-static-site-custom-dns.tfstate"
   }
 }
 
@@ -30,7 +30,7 @@ resource "random_string" "name_suffix" {
 }
 
 locals {
-  azure_function_name = "static-site-example-${random_string.name_suffix.result}"
+  azure_function_name = "static-site-example-custom-dns-${random_string.name_suffix.result}"
 
   tags = {
     "Application" = "Simple example static site with a custom DNS entry and TLS"
