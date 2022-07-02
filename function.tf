@@ -1,8 +1,3 @@
-moved {
-  from = azurerm_app_service_plan.static_site
-  to   = azurerm_service_plan.static_site
-}
-
 resource "azurerm_service_plan" "static_site" {
   name                = "asp-${var.name}"
   location            = azurerm_resource_group.static_site.location

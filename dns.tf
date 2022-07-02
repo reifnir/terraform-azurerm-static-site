@@ -15,19 +15,20 @@ data "azurerm_dns_zone" "custom" {
   resource_group_name = local.dns_zone_resource_group_name
 }
 
-
 resource "azurerm_dns_cname_record" "cnames_to_function" {
   count               = length(local.dns_cname_list)
   name                = local.dns_cname_list[count.index]
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
   ttl                 = 300
-  record              = azurerm_linux_function_app.static_site.default_hostname
+  record              = local.default_hostname
   tags                = var.tags
 }
 
+# need a wait for eventual consistency?
 data "dns_a_record_set" "function" {
-  host = azurerm_linux_function_app.static_site.default_hostname
+  host       = local.default_hostname
+  depends_on = [azurerm_linux_function_app.static_site]
 }
 
 resource "azurerm_dns_a_record" "naked_domain" {
