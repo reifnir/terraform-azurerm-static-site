@@ -23,7 +23,7 @@ variable "azure_client_secret" {
 
 resource "random_string" "name_suffix" {
   length  = 4
-  number  = true
+  numeric = true
   lower   = true
   upper   = false
   special = false

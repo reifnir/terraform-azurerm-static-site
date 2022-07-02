@@ -22,12 +22,12 @@ resource "azurerm_dns_cname_record" "cnames_to_function" {
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
   ttl                 = 300
-  record              = azurerm_function_app.static_site.default_hostname
+  record              = azurerm_linux_function_app.static_site.default_hostname
   tags                = var.tags
 }
 
 data "dns_a_record_set" "function" {
-  host = azurerm_function_app.static_site.default_hostname
+  host = azurerm_linux_function_app.static_site.default_hostname
 }
 
 resource "azurerm_dns_a_record" "naked_domain" {
@@ -47,7 +47,7 @@ resource "azurerm_dns_txt_record" "function_domain_verification" {
   ttl                 = 30
 
   record {
-    value = azurerm_function_app.static_site.custom_domain_verification_id
+    value = azurerm_linux_function_app.static_site.custom_domain_verification_id
   }
 
   # This is a race condition, consider adding a script that waits until the expected TXT record can be found
@@ -60,7 +60,7 @@ resource "azurerm_dns_txt_record" "function_domain_verification" {
 resource "azurerm_app_service_custom_hostname_binding" "static_site" {
   count               = length(local.subject_alternative_names)
   hostname            = local.subject_alternative_names[count.index]
-  app_service_name    = azurerm_function_app.static_site.name
+  app_service_name    = azurerm_linux_function_app.static_site.name
   resource_group_name = azurerm_resource_group.static_site.name
   depends_on          = [azurerm_dns_txt_record.function_domain_verification]
 }

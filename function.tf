@@ -1,15 +1,15 @@
-resource "azurerm_app_service_plan" "static_site" {
+moved {
+  from = azurerm_app_service_plan.static_site
+  to   = azurerm_service_plan.static_site
+}
+
+resource "azurerm_service_plan" "static_site" {
   name                = "asp-${var.name}"
   location            = azurerm_resource_group.static_site.location
   resource_group_name = azurerm_resource_group.static_site.name
-  kind                = "FunctionApp" # You might think this should be Linux...
-  reserved            = true
-
-  sku {
-    tier = "Dynamic"
-    size = "Y1"
-  }
-  tags = var.tags
+  os_type             = "Linux"
+  sku_name            = "Y1"
+  tags                = var.tags
 }
 
 data "azurerm_storage_account_sas" "package" {
@@ -41,20 +41,21 @@ data "azurerm_storage_account_sas" "package" {
     create  = false
     update  = false
     process = false
+    tag     = false
+    filter  = false
   }
 }
 
-resource "azurerm_function_app" "static_site" {
-  name                       = var.name
-  location                   = azurerm_resource_group.static_site.location
-  resource_group_name        = azurerm_resource_group.static_site.name
-  app_service_plan_id        = azurerm_app_service_plan.static_site.id
-  storage_account_name       = azurerm_storage_account.static_site.name
-  storage_account_access_key = azurerm_storage_account.static_site.primary_access_key
-  os_type                    = "linux"
-  version                    = "~3"
-  https_only                 = true
-  enable_builtin_logging     = false
+resource "azurerm_linux_function_app" "static_site" {
+  name                        = var.name
+  location                    = azurerm_resource_group.static_site.location
+  resource_group_name         = azurerm_resource_group.static_site.name
+  service_plan_id             = azurerm_service_plan.static_site.id
+  storage_account_name        = azurerm_storage_account.static_site.name
+  storage_account_access_key  = azurerm_storage_account.static_site.primary_access_key
+  functions_extension_version = "~4"
+  https_only                  = true
+  builtin_logging_enabled     = false
 
   site_config {
     ftps_state = "Disabled"
