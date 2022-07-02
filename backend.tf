@@ -1,5 +1,6 @@
 terraform {
   required_version = ">= 1.2"
+  
   required_providers {
     azurerm = {
       # Only testing with azurerm provider 2, need to test before being used in 3
