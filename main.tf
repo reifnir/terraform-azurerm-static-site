@@ -1,21 +1,3 @@
-terraform {
-  required_version = "~> 0.14"
-  required_providers {
-    azurerm = {
-      # Only testing with azurerm provider 2, need to test before being used in 3
-      version = "~> 2"
-    }
-    acme = {
-      source  = "vancluever/acme"
-      version = "2.4.0" # Since this isn't a Hashicorp-specific provider, not implicitly trusting patches
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
 module "file_extensions" {
   source          = "reifnir/mime-map/null"
   custom_mappings = var.custom_mime_mappings
