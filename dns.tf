@@ -4,7 +4,9 @@ locals {
   dns_zone_resource_group_name = local.create_dns ? split("/", var.custom_dns.dns_zone_id)[4] : ""
   dns_zone_name                = local.create_dns ? split("/", var.custom_dns.dns_zone_id)[8] : ""
 
+  # Maps create more meaningful terraform state names than counts (which can cause errors if you re-order the list)
   dns_cname_list     = local.create_dns ? [for h in var.custom_dns.hostnames : h if h != "@"] : []
+  dns_cname_map      = { for h in local.dns_cname_list : h => h }
   dns_naked_a_record = local.create_dns ? contains(var.custom_dns.hostnames, "@") : false
 }
 
@@ -16,8 +18,8 @@ data "azurerm_dns_zone" "custom" {
 }
 
 resource "azurerm_dns_cname_record" "cnames_to_function" {
-  count               = length(local.dns_cname_list)
-  name                = local.dns_cname_list[count.index]
+  for_each            = local.dns_cname_map
+  name                = each.key
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
   ttl                 = 60
@@ -41,14 +43,14 @@ resource "azurerm_dns_a_record" "naked_domain" {
 }
 
 resource "azurerm_dns_txt_record" "function_domain_verification" {
-  count               = length(local.subject_alternative_names)
-  name                = local.subject_alternative_names[count.index] == data.azurerm_dns_zone.custom.0.name ? "asuid" : "asuid.${trimsuffix(local.subject_alternative_names[count.index], ".${data.azurerm_dns_zone.custom.0.name}")}"
+  for_each            = local.subject_alternative_names
+  name                = each.value.verification_name
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
   ttl                 = 30
 
   record {
-    value = azurerm_linux_function_app.static_site.custom_domain_verification_id
+    value = data.azurerm_function_app.static_site.custom_domain_verification_id
   }
 
   # This is a race condition, consider adding a script that waits until the expected TXT record can be found
@@ -59,8 +61,8 @@ resource "azurerm_dns_txt_record" "function_domain_verification" {
 }
 
 resource "azurerm_app_service_custom_hostname_binding" "static_site" {
-  count               = length(local.subject_alternative_names)
-  hostname            = local.subject_alternative_names[count.index]
+  for_each            = local.subject_alternative_names
+  hostname            = each.value.full_domain
   app_service_name    = azurerm_linux_function_app.static_site.name
   resource_group_name = azurerm_resource_group.static_site.name
   depends_on          = [azurerm_dns_txt_record.function_domain_verification]
