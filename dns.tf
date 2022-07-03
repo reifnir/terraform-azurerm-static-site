@@ -20,7 +20,7 @@ resource "azurerm_dns_cname_record" "cnames_to_function" {
   name                = local.dns_cname_list[count.index]
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
-  ttl                 = 300
+  ttl                 = 60
   record              = local.default_hostname
   tags                = var.tags
 }
