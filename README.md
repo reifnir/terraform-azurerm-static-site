@@ -20,6 +20,8 @@ _If the `custom_dns` variable is populated..._
 
 - Binds those domain names and the Let's Encrypt certificate to the Azure Functions application
 
+- Certificates are valid for 90 days. Applying Terraform again will renew the certificate if there are fewer than 30 days before it expires.
+
 ## Detail
 
 It does this by first pushing all of the blob resources into a new storage account as a static website. This is an okay place to stop if you don't mind your resources being accessed with a domain like this: `https://sastaticsiteexammiahdsnu.z13.web.core.windows.net/`.
@@ -184,3 +186,17 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 | <a name="output_storage_account_primary_web_endpoint"></a> [storage\_account\_primary\_web\_endpoint](#output\_storage\_account\_primary\_web\_endpoint) | The storage account's self-hosted static site URL |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+## Change Log
+
+### 2.0.0
+
+Released 2022-07-04
+
+- When creating multiple objects, such as the DNS verification TXT records, switched from `count` to `for_each`. Using `count` can be buggy when items in a list are changed. If you're creating objects and their state index changes, Terraform will try to update both at once or remove/add at the same time leading to conflicts where you have to retry a number of times. Using `for_each` instead gives more stable state names. Ex: `module.custom_dns_static_site.azurerm_app_service_custom_hostname_binding.static_site["www"]` instead of `module.custom_dns_static_site.azurerm_app_service_custom_hostname_binding.static_site[0]`.
+- Marked the module compatible with versions beyond `0.14`.
+- Bumped the ACME provider used to generate Let's Encrypt certs from `2.4.0` to the current version, `2.9.0`.
+- Now using azurerm Terraform provider version 3 and later.
+- Moved away from deprecated objects `azurerm_function_app` and `azurerm_app_service_plan` resource for the newer `azurerm_linux_function_app` and `azurerm_service_plan`.
+   - Unfortunately, there are still a couple of bugs in `azurerm_linux_function_app` in that some properties (custom_domain_verification_id, default_hostname) are not yet implemented. There are already a couple of MRs that are just awaiting responses from Hashicorp [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/16263) and [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/17444) (I did that one).
+   - In order to use the newer resources, I needed to add a deprecated `azurerm_function_app` data reference as a workaround. This will be removed as soon as the missing functionality is released.

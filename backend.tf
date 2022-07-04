@@ -3,7 +3,6 @@ terraform {
 
   required_providers {
     azurerm = {
-      # Only testing with azurerm provider 2, need to test before being used in 3
       version = ">= 3"
     }
     acme = {
