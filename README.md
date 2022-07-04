@@ -2,9 +2,11 @@
 
 [![LICENSE](https://img.shields.io/github/license/reifnir/terraform-azurerm-static-site)](https://github.com/reifnir/terraform-azurerm-static-site/blob/master/LICENSE)
 
-This Terraform module stands up an Azure Functions website that hosts static content.
+This Terraform module stands up a static website and supports custom domain names and generates Let's Encrypt TLS certs. It currently only supports Azure DNS Zones, but I'll implement more DNS providers if someone requests it.
 
 ## Summary
+
+Find the Terraform Module publicly hosted [here](https://registry.terraform.io/modules/reifnir/static-site/azurerm)!
 
 - Hosts static resources in a Storage Account using the static website hosting capability
 
@@ -17,6 +19,8 @@ _If the `custom_dns` variable is populated..._
 - Creates DNS entries for the configured domains
 
 - Binds those domain names and the Let's Encrypt certificate to the Azure Functions application
+
+- Certificates are valid for 90 days. Applying Terraform again will renew the certificate if there are fewer than 30 days before it expires.
 
 ## Detail
 
@@ -101,23 +105,24 @@ jim.andreasen@reifnir.com
 
 MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-site/blob/main/LICENSE) for full details.
 
+<!-- regenerate TF docs using this: https://github.com/terraform-docs/terraform-docs -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 0.14 |
-| <a name="requirement_acme"></a> [acme](#requirement\_acme) | 2.4.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
+| <a name="requirement_acme"></a> [acme](#requirement\_acme) | 2.9.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_acme"></a> [acme](#provider\_acme) | 2.4.0 |
+| <a name="provider_acme"></a> [acme](#provider\_acme) | 2.9.0 |
 | <a name="provider_archive"></a> [archive](#provider\_archive) | n/a |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 2 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3 |
 | <a name="provider_dns"></a> [dns](#provider\_dns) | n/a |
 | <a name="provider_local"></a> [local](#provider\_local) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
@@ -127,23 +132,23 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_file_extensions"></a> [file\_extensions](#module\_file\_extensions) | reifnir/mime-map/null |  |
+| <a name="module_file_extensions"></a> [file\_extensions](#module\_file\_extensions) | reifnir/mime-map/null | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [acme_certificate.certificate](https://registry.terraform.io/providers/vancluever/acme/2.4.0/docs/resources/certificate) | resource |
-| [acme_registration.reg](https://registry.terraform.io/providers/vancluever/acme/2.4.0/docs/resources/registration) | resource |
+| [acme_certificate.certificate](https://registry.terraform.io/providers/vancluever/acme/2.9.0/docs/resources/certificate) | resource |
+| [acme_registration.reg](https://registry.terraform.io/providers/vancluever/acme/2.9.0/docs/resources/registration) | resource |
 | [azurerm_app_service_certificate.custom_hostname](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_certificate) | resource |
 | [azurerm_app_service_certificate_binding.custom_hostname](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_certificate_binding) | resource |
 | [azurerm_app_service_custom_hostname_binding.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_custom_hostname_binding) | resource |
-| [azurerm_app_service_plan.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_plan) | resource |
 | [azurerm_dns_a_record.naked_domain](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_a_record) | resource |
 | [azurerm_dns_cname_record.cnames_to_function](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_cname_record) | resource |
 | [azurerm_dns_txt_record.function_domain_verification](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/dns_txt_record) | resource |
-| [azurerm_function_app.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app) | resource |
+| [azurerm_linux_function_app.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_function_app) | resource |
 | [azurerm_resource_group.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_service_plan.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
 | [azurerm_storage_account.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_blob.function](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_blob) | resource |
 | [azurerm_storage_blob.static_files](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_blob) | resource |
@@ -155,6 +160,7 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 | [archive_file.azure_function_package](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_dns_zone.custom](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/dns_zone) | data source |
+| [azurerm_function_app.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/function_app) | data source |
 | [azurerm_storage_account_sas.package](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/storage_account_sas) | data source |
 | [dns_a_record_set.function](https://registry.terraform.io/providers/hashicorp/dns/latest/docs/data-sources/a_record_set) | data source |
 
@@ -180,3 +186,17 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 | <a name="output_storage_account_primary_web_endpoint"></a> [storage\_account\_primary\_web\_endpoint](#output\_storage\_account\_primary\_web\_endpoint) | The storage account's self-hosted static site URL |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+## Change Log
+
+### 2.0.0
+
+Released 2022-07-04
+
+- When creating multiple objects, such as the DNS verification TXT records, switched from `count` to `for_each`. Using `count` can be buggy when items in a list are changed. If you're creating objects and their state index changes, Terraform will try to update both at once or remove/add at the same time leading to conflicts where you have to retry a number of times. Using `for_each` instead gives more stable state names. Ex: `module.custom_dns_static_site.azurerm_app_service_custom_hostname_binding.static_site["www"]` instead of `module.custom_dns_static_site.azurerm_app_service_custom_hostname_binding.static_site[0]`.
+- Marked the module compatible with versions beyond `0.14`.
+- Bumped the ACME provider used to generate Let's Encrypt certs from `2.4.0` to the current version, `2.9.0`.
+- Now using azurerm Terraform provider version 3 and later.
+- Moved away from deprecated objects `azurerm_function_app` and `azurerm_app_service_plan` resource for the newer `azurerm_linux_function_app` and `azurerm_service_plan`.
+   - Unfortunately, there are still a couple of bugs in `azurerm_linux_function_app` in that some properties (custom_domain_verification_id, default_hostname) are not yet implemented. There are already a couple of MRs that are just awaiting responses from Hashicorp [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/16263) and [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/17444) (I did that one).
+   - In order to use the newer resources, I needed to add a deprecated `azurerm_function_app` data reference as a workaround. This will be removed as soon as the missing functionality is released.

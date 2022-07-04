@@ -1,6 +1,6 @@
 resource "random_string" "storage_account_name" {
   lower   = true
-  number  = true
+  numeric = true
   upper   = false
   special = false
   length  = 8

@@ -1,15 +1,10 @@
-resource "azurerm_app_service_plan" "static_site" {
+resource "azurerm_service_plan" "static_site" {
   name                = "asp-${var.name}"
   location            = azurerm_resource_group.static_site.location
   resource_group_name = azurerm_resource_group.static_site.name
-  kind                = "FunctionApp" # You might think this should be Linux...
-  reserved            = true
-
-  sku {
-    tier = "Dynamic"
-    size = "Y1"
-  }
-  tags = var.tags
+  os_type             = "Linux"
+  sku_name            = "Y1"
+  tags                = var.tags
 }
 
 data "azurerm_storage_account_sas" "package" {
@@ -41,20 +36,23 @@ data "azurerm_storage_account_sas" "package" {
     create  = false
     update  = false
     process = false
+    tag     = false
+    filter  = false
   }
 }
 
-resource "azurerm_function_app" "static_site" {
+resource "azurerm_linux_function_app" "static_site" {
   name                       = var.name
   location                   = azurerm_resource_group.static_site.location
   resource_group_name        = azurerm_resource_group.static_site.name
-  app_service_plan_id        = azurerm_app_service_plan.static_site.id
+  service_plan_id            = azurerm_service_plan.static_site.id
   storage_account_name       = azurerm_storage_account.static_site.name
   storage_account_access_key = azurerm_storage_account.static_site.primary_access_key
-  os_type                    = "linux"
-  version                    = "~3"
-  https_only                 = true
-  enable_builtin_logging     = false
+  # Apparently proxies.json isn't supported anymore on runtimes 4 and higher
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-proxies
+  functions_extension_version = "~3"
+  https_only                  = true
+  builtin_logging_enabled     = false
 
   site_config {
     ftps_state = "Disabled"
@@ -74,4 +72,16 @@ resource "azurerm_function_app" "static_site" {
     azurerm_storage_blob.function,
     data.archive_file.azure_function_package
   ]
+}
+
+# Some fields aren't populated correctly in the linux-specific versions of these resources.
+# Until these issues are fixed, the workaround is to use the old data object to read the missing config.
+#   (that's my PR for the custom_domain_verification_id one, we'll see how long until Hashicorp responds)
+#   custom_domain_verification_id: https://github.com/hashicorp/terraform-provider-azurerm/issues/17444
+#   default_hostname: https://github.com/hashicorp/terraform-provider-azurerm/issues/16263
+# 
+# I'm not making this version public until those issues are fixed. It creates entirely too much change noise in TF plans
+data "azurerm_function_app" "static_site" {
+  name                = azurerm_linux_function_app.static_site.name
+  resource_group_name = azurerm_resource_group.static_site.name
 }

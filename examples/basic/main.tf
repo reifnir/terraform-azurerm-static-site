@@ -14,7 +14,7 @@ provider "azurerm" {
 
 resource "random_string" "name_suffix" {
   length  = 4
-  number  = true
+  numeric = true
   lower   = true
   upper   = false
   special = false
