@@ -2,9 +2,11 @@
 
 [![LICENSE](https://img.shields.io/github/license/reifnir/terraform-azurerm-static-site)](https://github.com/reifnir/terraform-azurerm-static-site/blob/master/LICENSE)
 
-This Terraform module stands up an Azure Functions website that hosts static content.
+This Terraform module stands up a static website and supports custom domain names and generates Let's Encrypt TLS certs. It currently only supports Azure DNS Zones, but I'll implement more DNS providers if someone requests it.
 
 ## Summary
+
+Find the Terraform Module publicly hosted [here](https://registry.terraform.io/modules/reifnir/static-site/azurerm)!
 
 - Hosts static resources in a Storage Account using the static website hosting capability
 
