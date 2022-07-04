@@ -12,15 +12,6 @@ provider "azurerm" {
   features {}
 }
 
-variable "azure_client_id" {
-  description = "This value is passed into the ACME provider in order to perform the ACME DNS verification in order to generate a valid TLS certificate."
-}
-
-variable "azure_client_secret" {
-  description = "This value is passed into the ACME provider in order to perform the ACME DNS verification in order to generate a valid TLS certificate."
-}
-
-
 resource "random_string" "name_suffix" {
   length  = 4
   numeric = true
@@ -49,7 +40,7 @@ module "custom_dns_static_site" {
     # @ is interpreted as a naked domain. Ex: decomposingsoftware.com
     hostnames                  = ["@", "www", "deeper.subdomain"]
     dns_provider               = "azure"
-    dns_zone_id                = "/subscriptions/8df18e1b-269a-426f-a321-ca437966c787/resourceGroups/rg-dns-zones/providers/Microsoft.Network/dnszones/decomposingsoftware.com"
+    dns_zone_id                = var.azure_dns_zone_id
     lets_encrypt_contact_email = "jim.andreasen@reifnir.com"
     azure_client_id            = var.azure_client_id
     azure_client_secret        = var.azure_client_secret
@@ -60,4 +51,5 @@ module "custom_dns_static_site" {
 
 output "static_site" {
   value = module.custom_dns_static_site
+  sensitive = true
 }
