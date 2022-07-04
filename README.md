@@ -181,7 +181,7 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 | Name | Description |
 |------|-------------|
-| <a name="output_azure_function_defualt_url"></a> [azure\_function\_defualt\_url](#output\_azure\_function\_defualt\_url) | The Azure Functions application's default URL |
+| <a name="output_azure_function_default_url"></a> [azure\_function\_default\_url](#output\_azure\_function\_default\_url) | The Azure Functions application's default URL |
 | <a name="output_custom_dns_domains"></a> [custom\_dns\_domains](#output\_custom\_dns\_domains) | List of any custom DNS domains that were created bound to the static site |
 | <a name="output_storage_account_primary_web_endpoint"></a> [storage\_account\_primary\_web\_endpoint](#output\_storage\_account\_primary\_web\_endpoint) | The storage account's self-hosted static site URL |
 
