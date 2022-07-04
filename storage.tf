@@ -43,6 +43,7 @@ resource "azurerm_storage_container" "function_packages" {
 resource "azurerm_storage_blob" "static_files" {
   for_each               = fileset(var.static_content_directory, "**")
   name                   = each.value
+  content_md5            = filemd5("${var.static_content_directory}/${each.value}")
   storage_account_name   = azurerm_storage_account.static_site.name
   storage_container_name = "$web"
   type                   = "Block"
