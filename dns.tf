@@ -23,13 +23,13 @@ resource "azurerm_dns_cname_record" "cnames_to_function" {
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
   ttl                 = 60
-  record              = local.default_hostname
+  record              = data.azurerm_function_app.static_site.default_hostname
   tags                = var.tags
 }
 
 # need a wait for eventual consistency?
 data "dns_a_record_set" "function" {
-  host       = local.default_hostname
+  host       = data.azurerm_function_app.static_site.default_hostname
   depends_on = [azurerm_linux_function_app.static_site]
 }
 

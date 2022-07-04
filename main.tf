@@ -6,7 +6,6 @@ module "file_extensions" {
 locals {
   resource_group_name       = "rg-${var.name}-static-function"
   name_without_special_char = replace(var.name, "/[^\\w]*/", "")
-  default_hostname          = "${var.name}.azurewebsites.net"
 
   # Storage account names constraints:
   #   contain numbers and lowercase letters

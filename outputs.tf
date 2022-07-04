@@ -5,7 +5,7 @@ output "storage_account_primary_web_endpoint" {
 
 output "azure_function_defualt_url" {
   description = "The Azure Functions application's default URL"
-  value       = "https://${local.default_hostname}"
+  value       = "https://${data.azurerm_function_app.static_site.default_hostname}"
 }
 
 output "custom_dns_domains" {
