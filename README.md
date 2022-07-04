@@ -189,6 +189,18 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 ## Change Log
 
+### 3.0.1
+
+Released 2022-07-04
+
+- Added changelog notes.
+
+### 3.0.0
+
+Released 2022-07-04
+
+- Realized that the `azure_function_defualt_url` output was still misspelled and tried to correct it to `azure_function_default_url` before anyone used v2.0.0.
+
 ### 2.0.0
 
 Released 2022-07-04
