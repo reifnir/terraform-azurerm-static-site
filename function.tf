@@ -42,13 +42,15 @@ data "azurerm_storage_account_sas" "package" {
 }
 
 resource "azurerm_linux_function_app" "static_site" {
-  name                        = var.name
-  location                    = azurerm_resource_group.static_site.location
-  resource_group_name         = azurerm_resource_group.static_site.name
-  service_plan_id             = azurerm_service_plan.static_site.id
-  storage_account_name        = azurerm_storage_account.static_site.name
-  storage_account_access_key  = azurerm_storage_account.static_site.primary_access_key
-  functions_extension_version = "~4"
+  name                       = var.name
+  location                   = azurerm_resource_group.static_site.location
+  resource_group_name        = azurerm_resource_group.static_site.name
+  service_plan_id            = azurerm_service_plan.static_site.id
+  storage_account_name       = azurerm_storage_account.static_site.name
+  storage_account_access_key = azurerm_storage_account.static_site.primary_access_key
+  # Apparently proxies.json isn't supported anymore on runtimes 4 and higher
+  # https://docs.microsoft.com/en-us/azure/azure-functions/functions-proxies
+  functions_extension_version = "~3"
   https_only                  = true
   builtin_logging_enabled     = false
 
@@ -77,6 +79,8 @@ resource "azurerm_linux_function_app" "static_site" {
 #   (that's my PR for the custom_domain_verification_id one, we'll see how long until Hashicorp responds)
 #   custom_domain_verification_id: https://github.com/hashicorp/terraform-provider-azurerm/issues/17444
 #   default_hostname: https://github.com/hashicorp/terraform-provider-azurerm/issues/16263
+# 
+# I'm not making this version public until those issues are fixed. It creates entirely too much change noise in TF plans
 data "azurerm_function_app" "static_site" {
   name                = azurerm_linux_function_app.static_site.name
   resource_group_name = azurerm_resource_group.static_site.name
