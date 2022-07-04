@@ -1,11 +1,19 @@
 provider "acme" {
   # You cannot attach a let's encrypt staging cert to an app in Azure, you get a BadRequest 04038 error: Expired certificate is not allowed.
+  # So, we only use the production ACME endpoint.
   server_url = "https://acme-v02.api.letsencrypt.org/directory"
 }
 
 locals {
-  full_custom_domain_name   = local.dns_naked_a_record ? data.azurerm_dns_zone.custom.0.name : (local.create_dns ? "${local.dns_cname_list[0]}.${data.azurerm_dns_zone.custom.0.name}" : "")
-  subject_alternative_names = concat((local.dns_naked_a_record ? [data.azurerm_dns_zone.custom.0.name] : []), [for h in local.dns_cname_list : "${h}.${data.azurerm_dns_zone.custom.0.name}"])
+  full_custom_domain_name = local.dns_naked_a_record ? data.azurerm_dns_zone.custom.0.name : (local.create_dns ? "${local.dns_cname_list[0]}.${data.azurerm_dns_zone.custom.0.name}" : "")
+  hostnames = { for h in var.custom_dns.hostnames : h =>
+    {
+      hostname          = h
+      full_domain       = h == "@" ? data.azurerm_dns_zone.custom.0.name : "${h}.${data.azurerm_dns_zone.custom.0.name}"
+      verification_name = h == "@" ? "asuid" : "asuid.${h}"
+    }
+  }
+  subject_alternative_names = [for x in local.hostnames : x.full_domain]
 }
 
 resource "tls_private_key" "reg_private_key" {
@@ -49,8 +57,7 @@ resource "acme_certificate" "certificate" {
 }
 
 resource "azurerm_app_service_certificate" "custom_hostname" {
-  count = local.create_dns ? 1 : 0
-  # count               = length(local.subject_alternative_names)
+  count               = local.create_dns ? 1 : 0
   name                = local.subject_alternative_names.0
   resource_group_name = azurerm_resource_group.static_site.name
   location            = azurerm_resource_group.static_site.location
@@ -60,8 +67,8 @@ resource "azurerm_app_service_certificate" "custom_hostname" {
 }
 
 resource "azurerm_app_service_certificate_binding" "custom_hostname" {
-  count               = length(local.subject_alternative_names)
-  hostname_binding_id = azurerm_app_service_custom_hostname_binding.static_site[count.index].id
+  for_each            = local.hostnames
+  hostname_binding_id = azurerm_app_service_custom_hostname_binding.static_site[each.key].id
   certificate_id      = azurerm_app_service_certificate.custom_hostname.0.id
   ssl_state           = "SniEnabled"
 }

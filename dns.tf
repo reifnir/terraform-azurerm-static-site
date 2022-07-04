@@ -43,7 +43,7 @@ resource "azurerm_dns_a_record" "naked_domain" {
 }
 
 resource "azurerm_dns_txt_record" "function_domain_verification" {
-  for_each            = local.subject_alternative_names
+  for_each            = local.hostnames
   name                = each.value.verification_name
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
@@ -61,7 +61,7 @@ resource "azurerm_dns_txt_record" "function_domain_verification" {
 }
 
 resource "azurerm_app_service_custom_hostname_binding" "static_site" {
-  for_each            = local.subject_alternative_names
+  for_each            = local.hostnames
   hostname            = each.value.full_domain
   app_service_name    = azurerm_linux_function_app.static_site.name
   resource_group_name = azurerm_resource_group.static_site.name
