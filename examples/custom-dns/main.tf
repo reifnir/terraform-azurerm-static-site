@@ -50,6 +50,5 @@ module "custom_dns_static_site" {
 }
 
 output "static_site" {
-  value     = module.custom_dns_static_site
-  sensitive = true
+  value = module.custom_dns_static_site
 }

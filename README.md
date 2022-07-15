@@ -189,6 +189,12 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 ## Change Log
 
+### 3.2.0
+
+Released 2022-07-15
+
+- `default_hostname` and `custom_domain_verification_id` weren't implemented in the `azurerm_linux_function_app` object until azurerm version 3.14.0. Now that they are, got rid of that `azurerm_function_app` data object that was creating so much noise each time plan was run.
+
 ### 3.1.0
 
 Released 2022-07-04
@@ -216,5 +222,5 @@ Released 2022-07-04
 - Bumped the ACME provider used to generate Let's Encrypt certs from `2.4.0` to the current version, `2.9.0`.
 - Now using azurerm Terraform provider version 3 and later.
 - Moved away from deprecated objects `azurerm_function_app` and `azurerm_app_service_plan` resource for the newer `azurerm_linux_function_app` and `azurerm_service_plan`.
-   - Unfortunately, there are still a couple of bugs in `azurerm_linux_function_app` in that some properties (custom_domain_verification_id, default_hostname) are not yet implemented. There are already a couple of MRs that are just awaiting responses from Hashicorp [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/16263) and [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/17444) (I did that one).
+   - Unfortunately, there are still a couple of bugs in `azurerm_linux_function_app` in that some properties (`custom_domain_verification_id`, `default_hostname`) are not yet implemented. There are already a couple of MRs that are just awaiting responses from Hashicorp [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/16263) and [here](https://github.com/hashicorp/terraform-provider-azurerm/issues/17444) (I did that one).
    - In order to use the newer resources, I needed to add a deprecated `azurerm_function_app` data reference as a workaround. This will be removed as soon as the missing functionality is released.
