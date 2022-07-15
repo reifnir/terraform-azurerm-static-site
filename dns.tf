@@ -23,13 +23,13 @@ resource "azurerm_dns_cname_record" "cnames_to_function" {
   zone_name           = data.azurerm_dns_zone.custom.0.name
   resource_group_name = data.azurerm_dns_zone.custom.0.resource_group_name
   ttl                 = 60
-  record              = data.azurerm_function_app.static_site.default_hostname
+  record              = azurerm_linux_function_app.static_site.default_hostname
   tags                = var.tags
 }
 
 # need a wait for eventual consistency?
 data "dns_a_record_set" "function" {
-  host       = data.azurerm_function_app.static_site.default_hostname
+  host       = azurerm_linux_function_app.static_site.default_hostname
   depends_on = [azurerm_linux_function_app.static_site]
 }
 
@@ -50,10 +50,10 @@ resource "azurerm_dns_txt_record" "function_domain_verification" {
   ttl                 = 30
 
   record {
-    value = data.azurerm_function_app.static_site.custom_domain_verification_id
+    value = azurerm_linux_function_app.static_site.custom_domain_verification_id
   }
 
-  # This is a race condition, consider adding a script that waits until the expected TXT record can be found
+  # It takes time for DNS to propagate. If the check is made immediately, then the check was sometimes failing.
   # If this blows up, just increase the duration or rerun apply
   provisioner "local-exec" {
     command = "sleep 10s"

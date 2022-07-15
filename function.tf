@@ -73,15 +73,3 @@ resource "azurerm_linux_function_app" "static_site" {
     data.archive_file.azure_function_package
   ]
 }
-
-# Some fields aren't populated correctly in the linux-specific versions of these resources.
-# Until these issues are fixed, the workaround is to use the old data object to read the missing config.
-#   (that's my PR for the custom_domain_verification_id one, we'll see how long until Hashicorp responds)
-#   custom_domain_verification_id: https://github.com/hashicorp/terraform-provider-azurerm/issues/17444
-#   default_hostname: https://github.com/hashicorp/terraform-provider-azurerm/issues/16263
-# 
-# I'm not making this version public until those issues are fixed. It creates entirely too much change noise in TF plans
-data "azurerm_function_app" "static_site" {
-  name                = azurerm_linux_function_app.static_site.name
-  resource_group_name = azurerm_resource_group.static_site.name
-}
