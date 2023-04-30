@@ -106,23 +106,24 @@ jim.andreasen@reifnir.com
 MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-site/blob/main/LICENSE) for full details.
 
 <!-- regenerate TF docs using this: https://github.com/terraform-docs/terraform-docs -->
+<!-- run from project root: docker run --rm -v "$(pwd):/terraform-docs" quay.io/terraform-docs/terraform-docs:0.16.0 markdown /terraform-docs
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
-| <a name="requirement_acme"></a> [acme](#requirement\_acme) | 2.9.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
+| <a name="requirement_acme"></a> [acme](#requirement\_acme) | 2.13.1 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.14.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_acme"></a> [acme](#provider\_acme) | 2.9.0 |
+| <a name="provider_acme"></a> [acme](#provider\_acme) | 2.13.1 |
 | <a name="provider_archive"></a> [archive](#provider\_archive) | n/a |
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.14.0 |
 | <a name="provider_dns"></a> [dns](#provider\_dns) | n/a |
 | <a name="provider_local"></a> [local](#provider\_local) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
@@ -138,8 +139,8 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 | Name | Type |
 |------|------|
-| [acme_certificate.certificate](https://registry.terraform.io/providers/vancluever/acme/2.9.0/docs/resources/certificate) | resource |
-| [acme_registration.reg](https://registry.terraform.io/providers/vancluever/acme/2.9.0/docs/resources/registration) | resource |
+| [acme_certificate.certificate](https://registry.terraform.io/providers/vancluever/acme/2.13.1/docs/resources/certificate) | resource |
+| [acme_registration.reg](https://registry.terraform.io/providers/vancluever/acme/2.13.1/docs/resources/registration) | resource |
 | [azurerm_app_service_certificate.custom_hostname](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_certificate) | resource |
 | [azurerm_app_service_certificate_binding.custom_hostname](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_certificate_binding) | resource |
 | [azurerm_app_service_custom_hostname_binding.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_custom_hostname_binding) | resource |
@@ -160,7 +161,6 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 | [archive_file.azure_function_package](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_dns_zone.custom](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/dns_zone) | data source |
-| [azurerm_function_app.static_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/function_app) | data source |
 | [azurerm_storage_account_sas.package](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/storage_account_sas) | data source |
 | [dns_a_record_set.function](https://registry.terraform.io/providers/hashicorp/dns/latest/docs/data-sources/a_record_set) | data source |
 
@@ -188,6 +188,12 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Change Log
+
+### 3.3.0
+
+Released 2023-04-30
+
+- Bumped ACME provider version to 2.13.1.
 
 ### 3.2.0
 
