@@ -18,8 +18,7 @@ locals {
   function_package_container_name = "${var.name}-static-site-az-fn-packages"
 
   now                      = timestamp()
-  now_friendly             = formatdate("YYYY-MM-DD-hh-mm-ss", local.now)
-  in_one_hundred_years     = "${(tonumber(formatdate("YYYY", local.now)) + 100)}-${formatdate("MM-DD'T'hh:mm:ssZ", local.now)}"
+  in_one_hundred_years     = "${(tonumber(formatdate("YYYY", local.now)) + 100)}-01-01T00:00:00Z"
   function_package_get_url = "https://${azurerm_storage_account.static_site.name}.blob.core.windows.net/${azurerm_storage_container.function_packages.name}/${azurerm_storage_blob.function.name}${data.azurerm_storage_account_sas.package.sas}"
 
   content_type_map = module.file_extensions.mappings

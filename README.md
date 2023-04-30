@@ -189,6 +189,10 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 ## Change Log
 
+### 3.3.1
+
+Released 2023-04-30
+
 ### 3.3.0
 
 Released 2023-04-30
