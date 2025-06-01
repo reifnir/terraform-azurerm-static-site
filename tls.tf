@@ -6,13 +6,13 @@ provider "acme" {
 
 locals {
   full_custom_domain_name = local.dns_naked_a_record ? data.azurerm_dns_zone.custom.0.name : (local.create_dns ? "${local.dns_cname_list[0]}.${data.azurerm_dns_zone.custom.0.name}" : "")
-  hostnames = { for h in(local.create_dns ? var.custom_dns.hostnames : []) : h =>
+  hostnames = nonsensitive({ for h in(local.create_dns ? var.custom_dns.hostnames : []) : h =>
     {
       hostname          = h
       full_domain       = h == "@" ? data.azurerm_dns_zone.custom.0.name : "${h}.${data.azurerm_dns_zone.custom.0.name}"
       verification_name = h == "@" ? "asuid" : "asuid.${h}"
     }
-  }
+  })
   subject_alternative_names = [for x in local.hostnames : x.full_domain]
 }
 

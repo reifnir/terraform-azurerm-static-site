@@ -189,6 +189,24 @@ MIT Licensed. See [LICENSE](https://github.com/reifnir/terraform-azurerm-static-
 
 ## Change Log
 
+### 3.4.0
+
+Released 2025-06-01
+
+Fixed issue with newer versions of Terraform have been failing to apply due to the use of a (not really) sensitive value information being used in a for_each key:
+
+> │ Error: Invalid for_each argument
+> │ 
+> │   on .terraform/modules/resume_andreasen_dev/dns.tf line 46, in resource "azurerm_dns_txt_record" "function_domain_verification":
+> │   46:   for_each            = local.hostnames
+> │     ├────────────────
+> │     │ local.hostnames has a sensitive value
+> │ 
+> │ Sensitive values, or values derived from sensitive values, cannot be used
+> │ as for_each arguments. If used, the sensitive value could be exposed as a
+> │ resource instance key.
+
+
 ### 3.3.1
 
 Released 2023-04-30

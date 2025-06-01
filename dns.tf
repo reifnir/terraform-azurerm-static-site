@@ -6,7 +6,7 @@ locals {
 
   # Maps create more meaningful terraform state names than counts (which can cause errors if you re-order the list)
   dns_cname_list     = local.create_dns ? [for h in var.custom_dns.hostnames : h if h != "@"] : []
-  dns_cname_map      = { for h in local.dns_cname_list : h => h }
+  dns_cname_map      = nonsensitive({ for h in local.dns_cname_list : h => h })
   dns_naked_a_record = local.create_dns ? contains(var.custom_dns.hostnames, "@") : false
 }
 
